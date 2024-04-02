@@ -1,9 +1,10 @@
 #!/bin/bash
 
 ID=$RANDOM
-export header="torchrun --nproc_per_node 1 --nnodes 1 \
---rdzv-id=$ID --rdzv_backend c10d \
--m less.train.train"
+# export header="torchrun --nproc_per_node 1 --nnodes 1 \
+# --rdzv-id=$ID --rdzv_backend c10d \
+# -m less.train.train"
+export header="python less/train/train.py"
 
 export base_training_args="--do_train True \
 --max_seq_length 2048 \

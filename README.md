@@ -39,20 +39,25 @@ pip install -e .
 ## Data Preparation
 We follow the [open-instruct](https://github.com/allenai/open-instruct?tab=readme-ov-file#dataset-preparation) repo to prepare hour instruction tuning datasets. In our project, we utilize a combination of four training datasets: Flan v2, COT, Dolly, and Open Assistant. For the purposes of evaluation, we employ three additional datasets: MMLU, Tydiqa, and BBH. A processed version of these files are available [here](https://huggingface.co/datasets/princeton-nlp/less_data).
 
+Data is stored in `.jsonl` like this:
+`{"dataset": "dolly", "id": "dolly_1", "messages": [{"role": "user", "content": "Which is a species of fish? Tope or Rope"}, {"role": "assistant", "content": "\nTope"}]}`
+
 ## Data Selection Pipeline
 
 ### Step 1: Warmup training
 To enhance downstream performance from data selection, it's crucial to start with a warmup training step. This involves selecting a small portion of your entire dataset to train using the LoRA method. Follow these steps for effective warmup training:
 
 ```bash 
-DATA_DIR=../data
-MODEL_PATH=meta-llama/Llama-2-7b-hf
-PERCENTAGE=0.05 # percentage of the full data to train, you can specify the training file you want to use in the script
+DATA_DIR=./data
+MODEL_PATH=mistralai/Mistral-7B-v0.1 #meta-llama/Llama-2-7b-hf
+PERCENTAGE=0.5 # percentage of the full data to train, you can specify the training file you want to use in the script
 DATA_SEED=3
-JOB_NAME=llama2-7b-p${PERCENTAGE}-lora-seed${DATA_SEED}
+JOB_NAME=mistral-test-wmt #llama2-7b-p${PERCENTAGE}-lora-seed${DATA_SEED}
 
 ./less/scripts/train/warmup_lora_train.sh "$DATA_DIR" "$MODEL_PATH" "$PERCENTAGE" "$DATA_SEED" "$JOB_NAME"
 ```
+
+
 
 ### Step 2: Building the gradient datastore
 Once the initial warmup training stage is completed, we will collect gradients for the entire training dataset. For each checkpoint, our goal is to obtain the gradients of all the training data that we would like to select from. An example script is shown below.

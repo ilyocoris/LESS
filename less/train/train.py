@@ -6,7 +6,7 @@ import random
 import sys
 import time
 
-import datasets
+# import datasets
 import torch
 import torch.distributed as dist
 import transformers
@@ -14,7 +14,7 @@ import transformers
 from peft import LoraConfig, PeftModel, TaskType, get_peft_model
 from transformers import (AutoModelForCausalLM, AutoTokenizer,
                           DataCollatorForSeq2Seq, HfArgumentParser, Trainer,
-                          set_seed)
+                          set_seed, BitsAndBytesConfig)
 
 from less.data_selection.get_training_dataset import get_training_dataset
 from less.train.data_arguments import DataArguments, get_data_statistics
@@ -47,7 +47,7 @@ def main():
 
     log_level = training_args.get_process_log_level()
     logger.setLevel(log_level)
-    datasets.utils.logging.set_verbosity(log_level)
+    # datasets.utils.logging.set_verbosity(log_level)
     transformers.utils.logging.set_verbosity(log_level)
     transformers.utils.logging.enable_default_handler()
     transformers.utils.logging.enable_explicit_format()
@@ -73,7 +73,12 @@ def main():
                                          seed=data_args.sample_data_seed)
 
     model = AutoModelForCausalLM.from_pretrained(
-        model_args.model_name_or_path, torch_dtype=model_args.torch_dtype)
+        model_args.model_name_or_path, 
+        torch_dtype=model_args.torch_dtype,
+        device_map="auto"
+    )
+
+
     add_padding_to_tokenizer(tokenizer)
 
     # resize embeddings if needed (e.g. for LlamaTokenizer)

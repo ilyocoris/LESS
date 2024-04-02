@@ -54,14 +54,19 @@ for target_task_name in args.target_task_names:
             # validation_path = args.validation_gradient_path.format(
             # target_task_name, ckpt)
             validation_path = args.validation_gradient_path.format(
-                ckpt, target_task_name)
+                ckpt
+                # , target_task_name
+            )
             validation_info = torch.load(validation_path)
 
             if not torch.is_tensor(validation_info):
                 validation_info = torch.tensor(validation_info)
             validation_info = validation_info.to(device).float()
             # gradient_path = args.gradient_path.format(train_file_name, ckpt)
-            gradient_path = args.gradient_path.format(ckpt, train_file_name)
+            gradient_path = args.gradient_path.format(
+                ckpt
+                # , train_file_name
+            )
             training_info = torch.load(gradient_path)
 
             if not torch.is_tensor(training_info):

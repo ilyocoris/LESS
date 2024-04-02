@@ -125,7 +125,7 @@ if isinstance(model, PeftModel):
 
 adam_optimizer_state = None
 if args.info_type == "grads" and args.gradient_type == "adam":
-    optimizer_path = os.path.join(args.model_path, "optimizer.bin")
+    optimizer_path = os.path.join(args.model_path, "optimizer.pt")
     adam_optimizer_state = torch.load(
         optimizer_path, map_location="cpu")["state"]
 
@@ -137,7 +137,11 @@ if args.task is not None:
                           use_chat_format=args.use_chat_format,
                           max_length=args.max_length,
                           zh=args.zh)
-    dataloader = get_dataloader(dataset, tokenizer=tokenizer)
+    dataloader = get_dataloader(
+        dataset, 
+        tokenizer=tokenizer,
+        # batch_size=1,
+    )
 else:
     assert args.train_file is not None
     dataset = get_training_dataset(

@@ -1,13 +1,13 @@
 #!/bin/bash
+dim=8192
+gradient_path=./data/out/mistral-test-wmt/grads/train/checkpoint-{}-adam
+train_file_names=./data/translation-less/ende.jsonl
+ckpts="22 44 66 88"
+checkpoint_weights="1.6877e-05 1.2859e-05 7.7030e-06 2.5616e-06"
 
-gradient_path=$1
-train_file_names=$2
-ckpts=$3
-checkpoint_weights=$4
-
-validation_gradient_path=$5
-target_task_names=$6
-output_path=$7
+validation_gradient_path=/data/out/mistral-test-wmt/grads/val/checkpoint-{}-sgd
+# target_task_names=$6
+output_path=/data/out/mistral-test-wmt/selected
 
 if [[ ! -d $output_path ]]; then
     mkdir -p $output_path

@@ -132,7 +132,7 @@ if args.info_type == "grads" and args.gradient_type == "adam":
     else:
         model_path = args.model_path
 
-    optimizer_path = os.path.join(model_path, "optimizer.bin")
+    optimizer_path = os.path.join(model_path, "optimizer.pt")
     adam_optimizer_state = torch.load(
         optimizer_path, map_location="cpu")["state"]
     print("Loaded optimizer state from {}".format(optimizer_path))

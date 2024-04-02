@@ -92,7 +92,8 @@ def obtain_gradients(model, batch):
     loss = model(**batch).loss
     loss.backward()
     vectorized_grads = torch.cat(
-        [p.grad.view(-1) for p in model.parameters() if p.grad is not None])
+        [p.grad.view(-1).to(7) for p in model.parameters() if p.grad is not None]).to(7)
+    
     return vectorized_grads
 
 
@@ -116,10 +117,12 @@ def obtain_gradients_with_adam(model, batch, avg, avg_sq):
 
     loss = model(**batch).loss
     loss.backward()
-
+    # move tensors to gpu 7
+    avg = avg.to(7)
+    avg_sq = avg_sq.to(7)
     vectorized_grads = torch.cat(
-        [p.grad.view(-1) for n, p in model.named_parameters() if p.grad is not None])
-
+        [p.grad.view(-1).to(7) for n, p in model.named_parameters() if p.grad is not None])
+    vectorized_grads = vectorized_grads.to(7)
     updated_avg = beta1 * avg + (1 - beta1) * vectorized_grads
     updated_avg_sq = beta2 * avg_sq + (1 - beta2) * vectorized_grads ** 2
     vectorized_grads = updated_avg / torch.sqrt(updated_avg_sq + eps)
@@ -128,7 +131,11 @@ def obtain_gradients_with_adam(model, batch, avg, avg_sq):
 
 
 def prepare_optimizer_state(model, optimizer_state, device):
+    # print(optimizer_state[0])
     names = [n for n, p in model.named_parameters() if p.requires_grad]
+    # print(len(names))
+    # i think this is because of optimizer.bin vs optimizer.pt
+    names = range(len(names))
     avg = torch.cat([optimizer_state[n]["exp_avg"].view(-1) for n in names])
     avg_sq = torch.cat([optimizer_state[n]["exp_avg_sq"].view(-1)
                        for n in names])
@@ -158,7 +165,7 @@ def collect_grads(dataloader,
     """
 
     model_id = 0  # model_id is used to draft the random seed for the projectors
-    block_size = 128  # fixed block size for the projectors
+    block_size = 32  # fixed block size for the projectors
     projector_batch_size = 16  # batch size for the projectors
     torch.random.manual_seed(0)  # set the random seed for torch
 
@@ -166,8 +173,9 @@ def collect_grads(dataloader,
     save_interval = 160  # save every 160 batches
 
     def _project(current_full_grads, projected_grads):
-        current_full_grads = torch.stack(current_full_grads).to(torch.float16)
+        # current_full_grads = torch.stack(current_full_grads).to(torch.float16)
         for i, projector in enumerate(projectors):
+            current_full_grads = torch.stack(current_full_grads).to(torch.float16).to(projector.device)
             current_projected_grads = projector.project(
                 current_full_grads, model_id=model_id)
             projected_grads[proj_dim[i]].append(current_projected_grads.cpu())
@@ -204,6 +212,7 @@ def collect_grads(dataloader,
     # initialize a project for each target projector dimension
     projectors = []
     for dim in proj_dim:
+
         proj = projector(grad_dim=number_of_params,
                          proj_dim=dim,
                          seed=0,
@@ -213,7 +222,6 @@ def collect_grads(dataloader,
                          block_size=block_size,
                          max_batch_size=projector_batch_size)
         projectors.append(proj)
-
     count = 0
 
     # set up a output directory for each dimension

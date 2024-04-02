@@ -110,6 +110,15 @@ The influence score for each training data point will be saved in the `OUTPUT_PA
 
 ```bash
 python3 -m less.data_selection.write_selected_data \
+--target_task_names ende \
+--train_file_names enzh \
+--train_files ./data/translation-less/enzh.jsonl \
+--output_path  ./data/out/mistral-test-wmt/selected \
+--percentage 0.1
+```
+
+```bash
+python3 -m less.data_selection.write_selected_data \
 --target_task_names ${TARGET_TASK_NAMES} \
 --train_file_names ${TRAIN_FILE_NAMES} \
 --train_files ../data/train/processed/dolly/dolly_data.jsonl ../data/train/processed/oasst1/oasst1_data.jsonl \

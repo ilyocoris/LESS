@@ -1,3 +1,4 @@
 less.egg-info/
 data/
 wandb/
+.venv/

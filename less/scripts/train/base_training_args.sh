@@ -31,5 +31,5 @@ export base_training_args="--do_train True \
 --lora_dropout 0.1 \
 --lora_target_modules q_proj k_proj v_proj o_proj \
 --learning_rate 2e-05 \
---per_device_train_batch_size 1 \
+--per_device_train_batch_size 2 \
 --gradient_accumulation_steps 32"

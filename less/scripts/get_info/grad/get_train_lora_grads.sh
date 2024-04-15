@@ -2,12 +2,12 @@
 
 #./less/scripts/get_info/grad/get_train_lora_grads.sh
 # make into a for loop on ckpt
-CKPTS=(22 44 66 88)
+CKPTS=(229 459 688 916)
 for CKPT in ${CKPTS[@]}; do
     gradient_type=adam
-    train_file=./data/translation-less/enzh.jsonl
-    model=./data/out/mistral-test-wmt/checkpoint-$CKPT
-    output_path=./data/out/mistral-test-wmt/grads/train/checkpoint-$CKPT-$gradient_type
+    train_file="./data/out/medical/datasets/train.jsonl"
+    model=./data/out/medical/mistral-medical/checkpoint-$CKPT
+    output_path=./data/out/medical/mistral-medical/grads/train/checkpoint-$CKPT-$gradient_type
     dims=8192 # dimension of projection, can be a list
 
     if [[ ! -d $output_path ]]; then
@@ -21,5 +21,5 @@ for CKPT in ${CKPTS[@]}; do
     --output_path $output_path \
     --gradient_projection_dimension $dims \
     --gradient_type $gradient_type \
-    --max_samples 2000
+    --max_samples 3000
 done

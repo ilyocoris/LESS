@@ -1,13 +1,13 @@
 #!/bin/bash
-
+# ./less/scripts/get_info/grad/get_eval_lora_grads.sh
 # for validation data, we should always get gradients with sgd
-CKPTS=(22 44 66 88)
+CKPTS=(229 459 688 916)
 for CKPT in ${CKPTS[@]}; do
     # task=$1 # tydiqa, mmlu
     gradient_type=sgd
-    train_file=./data/translation-less/ende.jsonl
-    model=./data/out/mistral-test-wmt/checkpoint-$CKPT
-    output_path=./data/out/mistral-test-wmt/grads/val/checkpoint-$CKPT-$gradient_type
+    train_file=./data/out/medical/datasets/medical_meadow_wikidoc.jsonl
+    model=./data/out/medical/mistral-medical/checkpoint-$CKPT
+    output_path=./data/out/medical/mistral-medical/grads/val/checkpoint-$CKPT-$gradient_type
     dims=8192
 
     if [[ ! -d $output_path ]]; then

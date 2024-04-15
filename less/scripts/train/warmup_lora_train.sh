@@ -1,14 +1,16 @@
 #!/bin/bash
 
+#./less/scripts/train/warmup_lora_train.sh
+
 source less/scripts/train/base_training_args.sh
 
 data_dir=./data
 model_path=mistralai/Mistral-7B-v0.1
-percentage=0.5
+percentage=0.1
 data_seed=101
-job_name=mistral-test-wmt
+job_name=mistral-medical
 
-output_dir=./data/out/${job_name}
+output_dir=./data/out/medical/${job_name}
 if [[ ! -d $output_dir ]]; then
     mkdir -p $output_dir
 fi
@@ -18,7 +20,7 @@ fi
 #     "$data_dir/train/processed/dolly/dolly_data.jsonl"
 # "$data_dir/train/processed/oasst1/oasst1_data.jsonl")
 
-train_files=("$data_dir/translation-less/enzh.jsonl")
+train_files=("$data_dir/out/medical/datasets/train.jsonl")
 
 
 # use fsdp for large models

@@ -1,6 +1,6 @@
 peft==0.7.1
 transformers==4.36.2
-
+pandas
 # gus
 langchain
 datasets

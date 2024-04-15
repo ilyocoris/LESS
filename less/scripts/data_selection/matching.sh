@@ -3,14 +3,14 @@
 # ./less/scripts/data_selection/matching.sh
 
 dim=8192
-gradient_path=./data/out/mistral-test-wmt/grads/train/checkpoint-{}-adam/dim$dim/all_orig.pt
-train_file_names=enzh
-ckpts="22 44 66 88"
+gradient_path=./data/out/medical/mistral-medical/grads/train/checkpoint-{}-adam/dim$dim/all_orig.pt
+train_file_names=medbooks
+ckpts="229 459 688 916"
 checkpoint_weights="1.6877e-05 1.2859e-05 7.7030e-06 2.5616e-06"
 
-validation_gradient_path=./data/out/mistral-test-wmt/grads/val/checkpoint-{}-sgd/dim$dim/all_orig.pt
-target_task_names=ende
-output_path=./data/out/mistral-test-wmt/selected
+validation_gradient_path=./data/out/medical/mistral-medical/grads/val/checkpoint-{}-sgd/dim$dim/all_orig.pt
+target_task_names=wikidoc
+output_path=./data/out/medical/mistral-medical/selected
 
 if [[ ! -d $output_path ]]; then
     mkdir -p $output_path
